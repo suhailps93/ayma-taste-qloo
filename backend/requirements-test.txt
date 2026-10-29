@@ -1,0 +1,8 @@
+# Minimal deps to run the standalone demo and the self-contained tests.
+# No Qloo key, no database, no network required (the bundled fixture stands in
+# for Qloo). fastapi/pydantic are needed only because taste_match.py also
+# defines the HTTP router; the taste logic itself is stdlib-only.
+fastapi>=0.110
+pydantic>=2.5
+httpx>=0.27          # FastAPI TestClient dependency (endpoint tests)
+pytest>=8.0

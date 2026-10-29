@@ -1,0 +1,17 @@
+ayma-taste-qloo
+Copyright 2026 Ayma
+
+This product includes the Qloo-powered taste-match subset of the Ayma product,
+created for the Qloo Agentic Hackathon (October 2026): a shared-taste score and
+taste-based date ideas for a pair, built on the Qloo Taste / Insights API.
+
+Only the newly built, non-sensitive Qloo components are included here. Ayma's
+core product (auth, matching, the Firestore data layer, the Gemini client, the
+voice-agent worker, the Flutter app shell) is private and is NOT included; the
+small stand-ins under backend/_stubs/ reproduce only the narrow interfaces the
+extracted code and the self-contained tests exercise.
+
+Qloo entity names and the illustrative tags in backend/qloo_fixture.json are
+used only to drive the offline demo and are not Qloo data.
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
