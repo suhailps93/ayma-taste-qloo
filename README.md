@@ -63,20 +63,46 @@ The live product runs on **TestFlight** (iOS) and as an Android APK:
 (Public demo credentials — this is a disposable account seeded with fabricated
 profiles, nothing real.)
 
-**3. See a strong match vs a poor match.** Open **Explore** and open a profile:
+**3. See a strong match vs a poor match.** Open **Explore** and tap a profile card:
 
 - **Sofia Marino** → a **strong** taste match.
 - **Priya Nair** → a **poor** taste match.
+
+![Explore feed — tap Sofia Marino for a strong match, Priya Nair for a poor one](docs/images/explore.png)
+
+*In Explore, tap a profile card — Sofia Marino (strong, 99%) or Priya Nair (poor, 25%).*
+
+Each opens a **match report**. Sofia's lands at a **99%** fit; Priya's is an honest
+**25%**, capped by a dealbreaker — Ayma tells you *why* it's low:
+
+![Sofia Marino match report — 99% strong match](docs/images/match-sofia.png)
+
+*Sofia Marino — a 99% match, "high confidence."*
+
+![Priya Nair match report — 25% with a childfree-vs-children dealbreaker](docs/images/match-priya.png)
+
+*Priya Nair — 25%; the honest contrast, with the dealbreaker spelled out.*
 
 **4. Open the Qloo breakdown.** On the match report, scroll to the bottom and open
 the **"Taste match · powered by Qloo"** card. It shows the overall score, the
 per-domain bars, the shared tastes, the "why you match" taste descriptors, and the
 Qloo-ranked date ideas — all from the live Qloo Insights API.
 
+![Taste match · powered by Qloo — overall score, per-domain bars, and shared tastes](docs/images/taste-card.png)
+
+*The "Taste match · powered by Qloo" card: the 71/100 score, per-domain bars across
+all ten domains, the shared tastes, and the taste descriptors — every number from a
+live Qloo Insights call.*
+
 **5. Try it hands-free.** The whole app is voice-controlled — you can navigate
 anywhere and take any action just by talking. To start voice, tap the
 **microphone** button, or **press and hold the Ayma orb** in the bottom bar, then
 speak — e.g. *"open Sofia's profile"* or *"show our match report."*
+
+![Two ways to start voice — tap the mic or hold the Ayma orb](docs/images/voice-controls.png)
+
+*Two ways to start voice: tap the mic in the composer, or press and hold the Ayma
+orb in the bottom bar.*
 
 ---
 
