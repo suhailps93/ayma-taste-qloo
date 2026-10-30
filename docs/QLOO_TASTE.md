@@ -181,7 +181,7 @@ hackathon key, no LLM call).
 
 ## Files (self-contained for the public-repo extraction)
 
-`taste_match.py`, `qloo_client.py`, `qloo_fixture.json`, `taste_demo.html`,
+`taste_match.py`, `qloo_client.py`, `qloo_fixture.json`,
 `config.py`, `demo_taste.py`, and `tests/`. The private-core dependencies
 (`public_profile`, `story`, `auth`, `db`, `feature_flags`, `practice_date`) are
 documented as external and reproduced only by the test-only stand-ins in

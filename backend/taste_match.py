@@ -24,10 +24,8 @@ stripped, blocked/deleted refused). Nothing private is sent to Qloo; only
 entity names the person published.
 
 Surfaces: ``POST /taste/pair`` (signed in, 18+; caller × another user, shown
-on the AI Date Simulation result) and the public judge demo ``GET /taste/demo``
-+ ``GET /taste/demo/pair`` (seeded synthetic demo profiles ONLY — never a real
-user). Self-contained (with ``qloo_client.py`` + ``qloo_fixture.json`` +
-``taste_demo.html``) so it lifts cleanly into the public hackathon repo.
+on the AI Date Simulation result). Self-contained (with ``qloo_client.py`` +
+``qloo_fixture.json``) so it lifts cleanly into the public hackathon repo.
 """
 
 from __future__ import annotations
@@ -35,10 +33,8 @@ from __future__ import annotations
 import asyncio
 import logging
 import re
-from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, Query
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
 import public_profile
@@ -116,16 +112,6 @@ _DOMAIN_FILTER_TAGS = {"nightlife": ["urn:tag:category:place:nightlife"]}
 _MAX_PER_DOMAIN = 5
 _RECS_PER_DOMAIN = 8
 _MAX_DATE_PLACES = 3
-
-# The judge demo may ONLY pair these seeded synthetic profiles.
-DEMO_UIDS = {
-    "maya": "demo_practice_maya",
-    "leo": "demo_practice_leo",
-    "aisha": "demo_practice_aisha",
-    "noah": "demo_practice_noah",
-}
-_DEMO_PAGE = Path(__file__).parent / "taste_demo.html"
-_demo_cache: dict[tuple[str, str], dict] = {}
 
 NO_TASTE_MESSAGE = (
     "{name} hasn't added a public Taste page yet — add one with lines like "
@@ -676,35 +662,3 @@ async def taste_pair(
     raise HTTPException(
         status_code=404, detail={"code": "no_taste", "message": payload}
     )
-
-
-@router.get("/taste/demo", response_class=HTMLResponse, include_in_schema=False)
-async def taste_demo_page() -> HTMLResponse:
-    """Public judge demo page (seeded synthetic profiles only)."""
-    return HTMLResponse(_DEMO_PAGE.read_text(encoding="utf-8"))
-
-
-@router.get("/taste/demo/pair")
-async def taste_demo_pair(
-    a: str = Query(..., max_length=16), b: str = Query(..., max_length=16)
-) -> dict[str, object]:
-    """Public, unauthenticated taste match between two SEEDED DEMO profiles
-    (``maya``/``leo``/``aisha``/``noah``). Any other id is refused, so this
-    route can never read a real user. Results are cached per pair."""
-    a_key, b_key = a.strip().lower(), b.strip().lower()
-    if a_key not in DEMO_UIDS or b_key not in DEMO_UIDS or a_key == b_key:
-        raise HTTPException(status_code=404, detail="Pick two different demo profiles.")
-    if (a_key, b_key) in _demo_cache:
-        return _demo_cache[(a_key, b_key)]
-    db = get_db()
-    a_uid, b_uid = DEMO_UIDS[a_key], DEMO_UIDS[b_key]
-    try:
-        pa = taste_from_view(await asyncio.to_thread(public_profile.build, db, b_uid, a_uid))
-        pb = taste_from_view(await asyncio.to_thread(public_profile.build, db, a_uid, b_uid))
-        result = await match(pa, pb)
-    except NoTaste as exc:
-        raise HTTPException(status_code=404, detail=_no_taste_detail(exc)) from exc
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail="Demo profile not seeded.") from exc
-    _demo_cache[(a_key, b_key)] = result
-    return result

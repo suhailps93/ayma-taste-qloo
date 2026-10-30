@@ -13,9 +13,8 @@ are the actual code the deployed service runs.
 | File (here) | Origin (Ayma backend) | What it is |
 |---|---|---|
 | `backend/qloo_client.py` | `qloo_client.py` | Qloo Taste/Insights API client — `LiveQlooClient` (real API: `X-Api-Key`, `GET /search`, `GET /v2/insights` for entities, tags and demographics, process-wide rate pacing + 429 retry) and `FixtureQlooClient` (offline). Ten domain entity types. |
-| `backend/taste_match.py` | `taste_match.py` | The taste-match logic (parse → resolve → per-domain overlap → score + shared + shared tags + demographics + date ideas, across ten domains), the FastAPI router (`/taste/pair`, `/taste/demo`, `/taste/demo/pair`), and the match-report section. |
+| `backend/taste_match.py` | `taste_match.py` | The taste-match logic (parse → resolve → per-domain overlap → score + shared + shared tags + demographics + date ideas, across ten domains), the FastAPI router (`/taste/pair`), and the match-report section. |
 | `backend/qloo_fixture.json` | `qloo_fixture.json` | 72 real, well-known entities across all ten domains, with illustrative tags (NOT Qloo data) for the offline demo/tests. |
-| `backend/taste_demo.html` | `taste_demo.html` | A standalone pairing page for the engine (served at `GET /taste/demo`). |
 | `docs/QLOO_TASTE.md` | `docs/QLOO_TASTE.md` | Full design doc: signals, scoring, where the Taste page comes from, live-vs-fixture, privacy, the kill switch, the API. |
 
 ## Newly written for this repo (packaging, not in the private backend)

@@ -198,7 +198,6 @@ backend/
   qloo_fixture.json     72 real, well-known entities across all ten domains
                         (illustrative tags, NOT Qloo data) so the demo + tests run
                         with no key and no network.
-  taste_demo.html       A standalone pairing page for the engine.
   config.py             The two non-secret Qloo config fields (base URL, timeout).
   demo_taste.py         Standalone runnable demo (tastes -> score + ideas).
   _stubs/               Test-only stand-ins for Ayma's private core (see its README).

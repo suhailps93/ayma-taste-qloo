@@ -183,28 +183,6 @@ def _client(db, caller_uid: str | None = None) -> TestClient:
     return TestClient(app)
 
 
-def test_demo_pair_endpoint_public_and_cached():
-    taste_match._demo_cache.clear()
-    client = _client(seeded_db())
-    resp = client.get("/taste/demo/pair", params={"a": "maya", "b": "leo"})
-    assert resp.status_code == 200
-    body = resp.json()
-    assert body["a"]["name"] == "Maya" and body["b"]["name"] == "Leo"
-    assert "Khruangbin" in body["shared"]
-
-
-def test_demo_pair_endpoint_refuses_non_demo_ids():
-    client = _client(seeded_db())
-    resp = client.get("/taste/demo/pair", params={"a": "maya", "b": "real_user"})
-    assert resp.status_code == 404
-
-
-def test_demo_page_served():
-    client = _client(seeded_db())
-    resp = client.get("/taste/demo")
-    assert resp.status_code == 200 and "html" in resp.headers["content-type"]
-
-
 def test_pair_endpoint_between_caller_and_other():
     db = seeded_db()
     client = _client(db, caller_uid=MAYA)

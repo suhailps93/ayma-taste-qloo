@@ -1,8 +1,7 @@
 """The four fabricated demo profiles, seeded into a :class:`FakeDb`.
 
 These mirror the public "Taste" pages of Ayma's seeded synthetic demo profiles
-(``demo_practice_{maya,leo,aisha,noah}``) — the only profiles the public judge
-demo (``GET /taste/demo/pair``) is allowed to read. Nobody here is a real
+(``demo_practice_{maya,leo,aisha,noah}``). Nobody here is a real
 person. Each carries just a name, a coarse city, and a public ``taste`` wiki
 page in the exact ``Music/Film/Food`` shape ``taste_match.parse_taste`` reads.
 
