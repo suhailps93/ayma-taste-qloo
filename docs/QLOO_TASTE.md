@@ -1,142 +1,188 @@
 # Taste match powered by Qloo (Qloo Agentic Hackathon)
 
-Shared-taste score + taste-based date ideas for a pair, from Qloo's Taste API
-(taste graph across music, film and dining). Built on `meta-hackathon` for the
-Qloo Agentic Hackathon (Devpost, closes Fri Oct 30 2026, 8:45 PM PT). Additive:
-no existing surface changes behaviour.
+Shared-taste score, shared-taste descriptors, an audience read, and taste-based
+date ideas for a pair of people, from Qloo's Taste / Insights API — a taste graph
+across ten domains (music, film, food & places, TV, books, podcasts, games,
+travel, fashion/brands, nightlife). Built for the Qloo Agentic Hackathon.
+Additive: a music/film/food profile scores and calls exactly as the original
+three-domain version did; the other seven domains are recognised only when a
+Taste page lists them.
 
 ## Try it (judges)
 
-Public, no sign-in: **`https://ayma-api-235381544962.us-central1.run.app/taste/demo`**.
-Pick two of the four synthetic demo profiles (Maya · SF, Leo · Oakland,
-Aisha · Berkeley, Noah · San Jose) and press **Match tastes**. JSON:
-`GET /taste/demo/pair?a=maya&b=leo`.
+The live product runs on **TestFlight (iOS)**: <https://testflight.apple.com/join/uceuSRkh>.
+Log in as `test1@gmail.com` / `Test123` (disposable demo account), open **Explore**,
+and open **Sofia Marino** (a strong taste match) or **Priya Nair** (a poor match).
+On the match report, open the **"Taste match · powered by Qloo"** card at the
+bottom for the per-domain breakdown.
 
-In the app: open a demo profile → **Simulate a conversation** → run it; the
-**Taste match** card sits under the compatibility score.
+To run the extracted engine locally, see the repo README (`python3 demo_taste.py`,
+offline fixture or live Qloo with `QLOO_API_KEY`).
 
 ## How it works
 
-1. **Taste signals** — each person's PUBLIC "Taste" wiki page (`page_type:
-   "taste"`), lines like `Music: Khruangbin, Bon Iver`, `Film: Arrival`,
-   `Food: Ramen Shop` (aliases: artists/bands, movies/films, food/places/
-   restaurants/cafes; max 5 per domain). Parsed by `taste_match.parse_taste`.
+1. **Taste signals** — each person's PUBLIC Taste page, lines like
+   `Music: Khruangbin, Bon Iver`, `Film: Arrival`, `Food: Ramen Shop`, and
+   optionally `TV:`, `Books:`, `Podcasts:`, `Games:`, `Travel:`, `Brands:`,
+   `Nightlife:` (full alias + header list below; max 5 per domain). Parsed by
+   `taste_match.parse_taste`.
 2. **Resolve** every name to a Qloo entity of its domain's type
-   (`GET /search?query=…&types=urn:entity:artist|movie|place`).
-3. **Compatibility** — for each domain, Qloo recommendations (`GET /v2/insights`,
-   `signal.interests.entities` = ALL of a person's entities, so it's
-   cross-domain) for person A and for person B; domain score = overlap
-   coefficient of the two recommendation sets × 100; overall = mean of domains.
-   Shared tastes = names both listed outright, then shared recommendations in
-   the joint ranking's order. Label: ≥70 strong, ≥45 good, ≥25 some, else
-   different. Summary is a short template over the shared names + best domain.
-4. **Date ideas** — one joint Qloo query (both people's entities at once) for
-   `urn:entity:place` filtered to the first person's city (`filter.location.query`),
-   top 3; plus the top joint film pick ("movie night") and music pick
-   ("listening date or live show") that neither person already listed.
+   (`GET /search?query=…&types=urn:entity:…`) — ten entity types (below).
+   Resolved entities carry their Qloo `tags` (names) and `tag_ids` (URNs).
+3. **Compatibility** — for each domain **both** people listed, Qloo
+   recommendations (`GET /v2/insights`, `signal.interests.entities` = ALL of a
+   person's entities, so it's cross-domain) for person A and for person B; domain
+   score = overlap coefficient × 100 of the two sets, each being that person's
+   stated entities in the domain **plus** their recs (so a directly-shared
+   favourite always counts and a shared domain never reads a spurious 0); overall
+   = mean of the both-stated domains. **Shared tastes = only names both people
+   listed outright** — Qloo's cross-domain predicted entities drive the score but
+   are never surfaced as a stated/shared taste. Label: ≥70 strong, ≥45 good, ≥25
+   some, else different. Only domains BOTH people listed are scored.
+4. **Why you match (`shared_tags`)** — `GET /v2/insights filter.type=urn:tag`
+   gives Qloo's affinity-ranked tags for each whole taste profile; the engine
+   intersects the two (genre/theme/style labels ahead of niche keyword tags),
+   blended with the tags their resolved entities share, into readable descriptors
+   ("Atmospheric", "Melancholic", "Psychedelic") — the explainability of the match.
+5. **Audience read (`demographics`)** — `GET /v2/insights
+   filter.type=urn:demographics` per person returns Qloo's signed age/gender
+   over-/under-index for each taste entity; averaged into one `{age, gender}` read
+   per person, surfaced as `top_age` / `gender_lean` + a shared note. Only taste
+   entity ids are sent — never user identity.
+6. **Date ideas** — one joint Qloo query (both people's entities at once) for
+   `urn:entity:place`, filtered to the first person's city
+   (`filter.location.query`) and tag-aligned to both via `filter.tags` = the place
+   tags their dining picks share (unfiltered fallback so ideas never go dark), top
+   3; each place "why" names the shared tag. Plus one pick per other present domain
+   (film → "movie night", music → "listening date", TV → "binge night", books →
+   "book swap", games → "game night", travel → "weekend trip", nightlife → "night
+   out", brands → "browse together") that the joint Qloo ranking puts highly and
+   neither person already listed.
 
-## Where the Taste page comes from
+## Qloo API surface we use (depth + breadth)
 
-Real users populate their PUBLIC Taste page through the normal questionnaire —
-no separate taste form or CTA. Three `page_type: "taste"` nodes live in the
-question tree (`functions/bootstrap/question_tree.json`, branch `all`, so every
-intent and the pre-intent flow see them): `taste_music` (core, weight 5),
-`taste_film` and `taste_food` (deep, weight 4). Ayma raises them conversationally
-via `next_questions` and records the answer with `record_answer` as a
-comma-separated list of up to 5 names.
+The full enumeration of the Qloo API the taste engine touches. All calls are `GET`
+with the `X-Api-Key` header against the Qloo Insights host (`QLOO_API_BASE_URL`,
+default `https://hackathon.api.qloo.com`).
 
-**Asked early (so the Qloo Taste match stops showing empty).** `taste` is a
-_promoted_ section in `completeness.py` (`_EARLY_PAGE_TYPES`): it is always
-unlocked and transparent to the sequential core-first gate, so it never waits
-behind every earlier section's core and never locks the sections after it.
-Combined with `taste_music`'s top weight, that lands `taste_music` near the top
-of `next` (right after the routing node — the identity basics come from
-preboarding and are not re-asked) for any user who hasn't answered it yet, and
-makes the **"Tastes (music, film & food)"** section show as an open, fillable
-topic on the complete-profile screen. Once `taste_music` is answered,
-`taste_film`/`taste_food` unlock within the section. The complete-profile screen
-is server-driven from `GET /questionnaire` (`completeness.questionnaire_view`),
-so this needs no separate UI — the promoted section renders there automatically.
+**Endpoints & `/v2/insights` surface:**
 
-On any taste answer, `skills/questionnaire.py::_sync_taste_page` composes the
-user's `users/{uid}/wiki_pages/taste` page deterministically in the exact shape
-`parse_taste` reads:
+| Call | Params used | Response path | Drives |
+|---|---|---|---|
+| `GET /search` | `query`, `types` (one `urn:entity:*`), `take` | `results[]` → `entity_id`, `name`, `tags[].name`, `tags[].tag_id` | name → entity, with tags + tag ids |
+| `GET /v2/insights` (entity) | `filter.type=urn:entity:*`, `signal.interests.entities`, `filter.location.query`, `filter.tags`, `take` | `results.entities[]` → `name`, `entity_id`, `query.affinity`, `tags[]`, `properties.address` | per-domain recs → overlap score; joint recs → date ideas |
+| `GET /v2/insights` (tags) | `filter.type=urn:tag`, `signal.interests.entities`, `take` | `results.tags[]` → `tag_id`, `name`, `query.affinity` | `shared_tags` (why you match) |
+| `GET /v2/insights` (demographics) | `filter.type=urn:demographics`, `signal.interests.entities` | `results.demographics[].query.age.{bucket}`, `.gender.{male,female}` | `demographics` (audience skew) |
 
-```
-Music: Khruangbin, Bon Iver, Phoebe Bridgers
-Film: Arrival, Amélie, Spirited Away
-Food: Tartine Bakery, Zuni Café
-```
+Age buckets returned: `24_and_younger`, `25_to_29`, `30_to_34`, `35_to_44`,
+`45_to_54`, `55_and_older`; gender: `male`, `female` (signed over/under-index,
+roughly −1…+1). `filter.location.query` + `filter.tags` together can over-narrow
+and return zero places — the engine falls back to the unfiltered joint query.
+`filter.tags` takes tag URNs only (freeform strings are rejected), so place
+alignment uses the `tag_id`s the two dining picks share. Nightlife uses
+`urn:entity:place` narrowed by `filter.tags=urn:tag:category:place:nightlife`
+(that tag + a location filter returns zero, so nightlife recs run without the
+location filter).
 
-The page is `visibility: "public"` by design — it is the user's own stated
-favourites, meant to be shared, exactly like the seeded demo profiles and the
-`qz_*` hard-filter mirror. Because the content IS the user's stated answer (no
-model inference, nothing embarrassing a reviewer would need to vet), it is
-written straight to `ai_body` rather than through the AI-rewrite approval
-proposal flow, so the taste match reads fresh data immediately. A manual
-`user_edits` override (if the user ever hand-edits the page) still wins in the
-public view and is never touched; an existing visibility choice is preserved.
-So a pair who both answered the taste questions get a real score with no manual
-Taste-page editing — previously only the four seeded demo profiles and anyone
-who hand-added a Taste page had taste data.
+**Entity types (breadth) ↔ Taste-page headers.** Every type below resolves against
+the live hackathon API (search + insights):
+
+| Domain key | Entity type URN | Header strings parsed (case-insensitive) |
+|---|---|---|
+| `music` | `urn:entity:artist` | Music, Artists, Bands |
+| `film` | `urn:entity:movie` | Film, Films, Movie, Movies |
+| `dining` | `urn:entity:place` | Dining, Food, Places, Restaurants, Cafes |
+| `tv` | `urn:entity:tv_show` | TV, TV shows, Shows, Television, Series |
+| `books` | `urn:entity:book` | Books, Book, Reading, Authors |
+| `podcasts` | `urn:entity:podcast` | Podcasts, Podcast |
+| `games` | `urn:entity:videogame` | Games, Game, Video games, Videogames, Gaming |
+| `travel` | `urn:entity:destination` | Travel, Destinations, Destination, Trips, Places to go |
+| `brands` | `urn:entity:brand` | Brands, Brand, Fashion, Style |
+| `nightlife` | `urn:entity:place` + nightlife tag | Nightlife, Bars, Clubs, Going out |
+
+> Note on `videogame`: the live hackathon API uses `urn:entity:videogame` (no
+> underscore). `urn:entity:video_game` returns HTTP 400 there, so the no-underscore
+> form is authoritative for this deployment.
+
+The first three (music/film/dining) are the original demo domains; the rest are
+**additive** — recognised only when a Taste page lists them, never required. A
+Taste page with only Music/Film/Food scores and calls exactly as before.
+
+**Response fields (additive — never renamed or removed):**
+- `shared_tags: string[]` — readable shared taste descriptors (the "why you match"
+  headline).
+- `demographics: {a, b, note} | null` — per person `{top_age, gender_lean,
+  age:{bucket:skew}, gender:{male,female}}`; `note` is a short comparison; `null`
+  when Qloo has no read (e.g. the offline fixture).
+- `domains[].domain` and `date_ideas[].kind` range over the ten domain keys above.
+
+**Also available (enumerated, not needed by the match):** `GET /v2/tags`
+(resolve freeform text → tag URNs) and `GET /v2/audiences` /
+`GET /v2/audiences/types` (`signal.demographics.audiences`); `signal.location`,
+`filter.location.radius` (metres), `filter.popularity.min/max` (0–1 percentile),
+`filter.exclude.*`, and `filter.type=urn:heatmap` (geo grid). The engine sticks to
+the four call shapes above — the ones that improve a *pair* taste match.
 
 ## Live vs fixture
 
 `qloo_client.get_client()` returns the live client when `QLOO_API_KEY` is set
-(Secret Manager → Cloud Run), else `FixtureQlooClient` — a deterministic mini
-taste graph in `functions/bootstrap/qloo_fixture.json` (48 real, well-known
-entities; tags illustrative, NOT Qloo data) scoring recommendations by shared
-tags. Any live failure (timeout, auth, unexpected payload) falls back to the
-fixture for that request. Every response carries `source: "qloo" | "fixture"`;
-the web page and app card show a "sample data" chip on fixture.
+(Secret Manager → Cloud Run in production), else `FixtureQlooClient` — a
+deterministic mini taste graph in `qloo_fixture.json` (72 real, well-known
+entities across all ten domains; tags illustrative, NOT Qloo data) scoring
+recommendations by shared tags, with `tags()` / `demographics()` offline
+stand-ins (demographics degrades to `null`). Any live failure (timeout, auth,
+unexpected payload) falls back to the fixture for that request. Every response
+carries `source: "qloo" | "fixture"`; the UI shows a "sample data" chip on fixture.
 
-**Status: LIVE** since 2026-10-27 (ayma-api revision `ayma-api-00221-wjd`): the
-deployed service serves `source: "qloo"` from the hackathon Insights API.
-Verified demo pairs: maya×leo 25 (music 0, film 25, dining 50), aisha×noah 42
-(music 50, film 25, dining 50), maya×aisha 25 (music 50, film 12, dining 12);
-~6.5–7.5 s uncached (Insights calls take ~1–4 s each), then cached per pair.
-
-Rate limit: the hackathon key allows 10 requests/second (50,000/month) and one
-match makes ~25 calls, so `LiveQlooClient` paces calls process-wide at 8/s and
-retries a 429 up to twice after the one-second window resets.
+Rate limit: the hackathon key allows 10 requests/second and one match makes ~25
+calls, so `LiveQlooClient` paces calls process-wide at 8/s and retries a 429 up to
+twice after the one-second window resets.
 
 Config (`config.py`): `QLOO_API_BASE_URL` (default
-`https://hackathon.api.qloo.com`), `QLOO_TIMEOUT_SECONDS` (default 6). Secret:
-`QLOO_API_KEY` — in Secret Manager (ayma-ai), mounted via `SECRETS` in
-`scripts/deploy-api.sh` (`--full`); the runtime service account has
-`secretAccessor` on it.
+`https://hackathon.api.qloo.com`), `QLOO_TIMEOUT_SECONDS` (default 6). The
+`QLOO_API_KEY` secret is read from the environment at the call site (Secret
+Manager → Cloud Run in production; an env var locally), never stored in config or
+code. With no key, the match runs entirely on the offline fixture.
+
+## Kill switch
+
+A single runtime feature flag, `qloo_enabled` (default on), short-circuits
+`taste_match.match` **before any outbound Qloo call** and prevents
+`qloo_client.get_client()` from ever handing out a live client — so Qloo billing
+can be stopped instantly, with no redeploy, if hackathon credits run out. When off
+the taste features degrade to the no-taste empty state.
 
 ## API
 
-- `POST /taste/pair {other_uid}` — signed in, 18+. Caller × other user, both
-  from their PUBLIC views (`public_profile.build`; blocked/deleted → 404).
-  Shown as the "Taste match" card on the AI Date Simulation result.
-- `GET /match/{match_id}` → `taste` — the match-compatibility report between two
-  users embeds the SAME taste match as a labeled "Taste match · powered by Qloo"
-  section (`taste_match.report_section`, reusing the `/taste/pair` engine — no
-  duplicated Qloo calls). The `taste` value is the taste payload with
-  `status: "ok"`, a `{"status":"no_taste","message":…}` empty-state marker when
-  one/both lack a public Taste page, or `null` on any other failure (the report
-  never errors).
-- `GET /taste/demo` — public HTML judge page (`taste_demo.html`).
-- `GET /taste/demo/pair?a=&b=` — public; ONLY the four seeded demo ids
-  (`maya|leo|aisha|noah`), anything else 404, so it can never read a real user.
-  Cached in-process per pair.
+- `POST /taste/pair {other_uid}` — signed in, 18+. Caller × other user, both from
+  their PUBLIC views; blocked/deleted → 404. Shown as the "Taste match" card on the
+  AI Date Simulation result.
+- `GET /match/{match_id}` → `taste` — the match-compatibility report embeds the
+  SAME taste match as a labeled "Taste match · powered by Qloo" section
+  (`taste_match.report_section`, reusing the `/taste/pair` engine — no duplicated
+  Qloo calls). The `taste` value is the payload with `status: "ok"`, a
+  `{"status":"no_taste","message":…}` empty-state marker when one/both lack a public
+  Taste page, or `null` on any other failure (the report never errors).
 
 Response: `{source, a:{name}, b:{name}, score, score_label, summary, shared[],
-domains:[{domain, score}], date_ideas:[{name, kind, why, address}]}`.
-No taste page → 404 `{"code":"no_taste","message":…}`.
+shared_tags[], demographics:{a,b,note}|null, domains:[{domain, score}],
+date_ideas:[{name, kind, why, address}]}`. No taste page → 404
+`{"code":"no_taste","message":…}`.
 
 ## Privacy & cost
 
-Public profile data only, for both people (also for the caller — the caller's
-own private pages are not used). Only entity names a person published are sent
-to Qloo. Not credit-metered (Qloo hackathon key, no LLM call).
+Public profile data only, for both people (also for the caller — the caller's own
+private pages are not used). Only entity names a person published are sent to Qloo
+— including the demographics call, which sends **only taste entity ids, never user
+identity** (name, uid, birthdate, gender, location are never sent). The
+`demographics` block is the *audience* Qloo associates with those public tastes,
+not the user's own attributes. The match itself is not credit-metered (Qloo
+hackathon key, no LLM call).
 
 ## Files (self-contained for the public-repo extraction)
 
-`functions/bootstrap/taste_match.py`, `qloo_client.py`, `qloo_fixture.json`,
-`taste_demo.html`, `tests/test_taste_match.py`; the "Taste" pages in
-`practice_seed.py`; the router mount + `GET /match/{id}` embedding in `main.py`;
-Flutter shared card `ayma_flutter/lib/widgets/taste_match_card.dart` +
-`taste_models.dart` (reused by the date-sim result and the match report).
+`taste_match.py`, `qloo_client.py`, `qloo_fixture.json`, `taste_demo.html`,
+`config.py`, `demo_taste.py`, and `tests/`. The private-core dependencies
+(`public_profile`, `story`, `auth`, `db`, `feature_flags`, `practice_date`) are
+documented as external and reproduced only by the test-only stand-ins in
+`backend/_stubs/`. See `EXTRACTION_INVENTORY.md` for a file-by-file origin.
