@@ -12,6 +12,11 @@ gives them their **taste match** and **taste-based date ideas** — powered by
 an **audience read**, and date ideas (a place, a film, an artist, a game… that
 Qloo's taste graph ranks highly for *both* of them at once).
 
+![A user's Story — the living portrait Ayma builds from conversation](docs/images/story.png)
+
+*What Ayma captures per user — a living portrait built from conversation, feeding
+the taste profile (shown: the `test1` demo account).*
+
 In spirit, it's a first real step toward the world of Black Mirror's "Hang the
 DJ" — a system that learns who you are and finds who you'd actually click with.
 
@@ -63,16 +68,24 @@ The live product runs on **TestFlight** (iOS) and as an Android APK:
 (Public demo credentials — this is a disposable account seeded with fabricated
 profiles, nothing real.)
 
-**3. See a strong match vs a poor match.** Open **Explore** and tap a profile card:
+**3. See a strong match vs a poor match.** In **Explore**, tap a profile card
+(e.g. **Sofia Marino** or **Priya Nair**) — their **profile** opens. On the profile's
+right-side action rail, tap the **match icon** (the bottom one, directly below the
+search icon) to open the **match report**.
 
 - **Sofia Marino** → a **strong** taste match.
 - **Priya Nair** → a **poor** taste match.
 
-![Explore feed — tap Sofia Marino for a strong match, Priya Nair for a poor one](docs/images/explore.png)
+![Explore feed — tap a profile card: Sofia Marino (strong) or Priya Nair (poor)](docs/images/explore.png)
 
 *In Explore, tap a profile card — Sofia Marino (strong, 99%) or Priya Nair (poor, 25%).*
 
-Each opens a **match report**. Sofia's lands at a **99%** fit; Priya's is an honest
+![On the profile, tap the match icon on the right-side rail to open the match report](docs/images/profile-match-icon.png)
+
+*On the profile, tap the **match icon** on the right-side rail — the bottom glyph,
+directly below the search icon. That opens the match report.*
+
+The report opens on the score. Sofia's lands at a **99%** fit; Priya's is an honest
 **25%**, capped by a dealbreaker — Ayma tells you *why* it's low:
 
 ![Sofia Marino match report — 99% strong match](docs/images/match-sofia.png)
@@ -94,15 +107,18 @@ Qloo-ranked date ideas — all from the live Qloo Insights API.
 all ten domains, the shared tastes, and the taste descriptors — every number from a
 live Qloo Insights call.*
 
+Scroll past the score card for the **Qloo-ranked date ideas**:
+
+![Qloo-ranked date ideas — a place, a film, and an artist ranked for both](docs/images/date-ideas.png)
+
+*Qloo-ranked date ideas — a place, a film, and an artist the taste graph ranks highly
+for **both** of them at once, plus one pick per other shared domain (TV, games,
+travel…). This cross-domain ranking is the distinctive Qloo output.*
+
 **5. Try it hands-free.** The whole app is voice-controlled — you can navigate
 anywhere and take any action just by talking. To start voice, tap the
 **microphone** button, or **press and hold the Ayma orb** in the bottom bar, then
 speak — e.g. *"open Sofia's profile"* or *"show our match report."*
-
-![Two ways to start voice — tap the mic or hold the Ayma orb](docs/images/voice-controls.png)
-
-*Two ways to start voice: tap the mic in the composer, or press and hold the Ayma
-orb in the bottom bar.*
 
 ---
 
