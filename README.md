@@ -3,8 +3,9 @@
 **Taste match, powered by Qloo** — the Qloo-built subset of **Ayma**, extracted
 for the **Qloo Agentic Hackathon** (October 2026).
 
-Ayma is a voice-first AI dating companion. Two people each build up their taste
-profile by talking with Ayma. When they're in a match report together, Ayma
+Ayma is a voice-first AI dating companion — the whole app is voice-controlled, so
+you can navigate anywhere and take any action just by talking to Ayma. Two people
+each build up their taste profile by talking with Ayma. When they're in a match report together, Ayma
 gives them their **taste match** and **taste-based date ideas** — powered by
 **Qloo**: Ayma turns each person's stated tastes across **ten domains** into a
 **shared-taste score**, the **tastes and taste-descriptors they have in common**,
@@ -71,6 +72,11 @@ profiles, nothing real.)
 the **"Taste match · powered by Qloo"** card. It shows the overall score, the
 per-domain bars, the shared tastes, the "why you match" taste descriptors, and the
 Qloo-ranked date ideas — all from the live Qloo Insights API.
+
+**5. Try it hands-free.** The whole app is voice-controlled — you can navigate
+anywhere and take any action just by talking. To start voice, tap the
+**microphone** button, or **press and hold the Ayma orb** in the bottom bar, then
+speak — e.g. *"open Sofia's profile"* or *"show our match report."*
 
 ---
 
