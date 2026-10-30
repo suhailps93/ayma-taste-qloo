@@ -120,6 +120,11 @@ anywhere and take any action just by talking. To start voice, tap the
 **microphone** button, or **press and hold the Ayma orb** in the bottom bar, then
 speak — e.g. *"open Sofia's profile"* or *"show our match report."*
 
+![Two ways to start voice — tap the mic or hold the Ayma orb](docs/images/voice-controls.png)
+
+*Two ways to start voice: tap the mic in the composer, or press and hold the Ayma
+orb in the bottom bar.*
+
 ---
 
 ## Run the extracted engine yourself (no key, no database, no network)
