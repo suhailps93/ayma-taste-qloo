@@ -144,14 +144,6 @@ Config (`config.py`): `QLOO_API_BASE_URL` (default
 Manager → Cloud Run in production; an env var locally), never stored in config or
 code. With no key, the match runs entirely on the offline fixture.
 
-## Kill switch
-
-A single runtime feature flag, `qloo_enabled` (default on), short-circuits
-`taste_match.match` **before any outbound Qloo call** and prevents
-`qloo_client.get_client()` from ever handing out a live client — so Qloo billing
-can be stopped instantly, with no redeploy, if hackathon credits run out. When off
-the taste features degrade to the no-taste empty state.
-
 ## API
 
 - `POST /taste/pair {other_uid}` — signed in, 18+. Caller × other user, both from

@@ -3,14 +3,16 @@
 **Taste match, powered by Qloo** — the Qloo-built subset of **Ayma**, extracted
 for the **Qloo Agentic Hackathon** (October 2026).
 
-Ayma is a voice-first AI dating companion. Each user builds a persistent **AI
-avatar** of themselves from what they share, and those avatars go on **simulated
-AI-to-AI first dates** on the user's behalf. The hard question on any date — *would
-these two actually click in real life?* — is answered by **Qloo**: Ayma turns each
-person's stated tastes across **ten domains** into a **shared-taste score**, the
-**tastes and taste-descriptors they have in common**, an **audience read**, and
-**taste-based date ideas** (a place, a film, an artist, a game… that Qloo's taste
-graph ranks highly for *both* of them at once).
+Ayma is a voice-first AI dating companion. Two people each build up their taste
+profile by talking with Ayma. When they're in a match report together, Ayma
+gives them their **taste match** and **taste-based date ideas** — powered by
+**Qloo**: Ayma turns each person's stated tastes across **ten domains** into a
+**shared-taste score**, the **tastes and taste-descriptors they have in common**,
+an **audience read**, and date ideas (a place, a film, an artist, a game… that
+Qloo's taste graph ranks highly for *both* of them at once).
+
+In spirit, it's a first real step toward the world of Black Mirror's "Hang the
+DJ" — a system that learns who you are and finds who you'd actually click with.
 
 This repository contains **only** the components that call the **Qloo Taste /
 Insights API**. Everything else in Ayma — auth, matching, the Firestore data
@@ -24,11 +26,12 @@ Nobody in this repo is a real person; all demo profiles are fabricated.
 ## Why this is agentic, and why Qloo is load-bearing
 
 In Ayma the taste match is **a tool in an agent's hands**, not a standalone
-widget. When two AI avatars simulate a first date, the agent calls the Qloo taste
-match to decide *where the two of them would actually click* — a shared place to
-meet, a film to see, a record to put on — and then surfaces the overlap in the
-post-date **match report** ("Taste match · powered by Qloo"). The agent decides
-*when* to pull taste into the conversation; **Qloo supplies the taste reasoning.**
+widget. Ayma (the agent) calls the Qloo taste match as a tool — both in
+conversation and when it builds the **match report** ("Taste match · powered by
+Qloo") — to decide how two people fit and *where the two of them would actually
+click*: a shared place to meet, a film to see, a record to put on. The agent
+decides *when* to pull taste into the conversation; **Qloo supplies the taste
+reasoning.**
 
 The differentiator is **cross-domain taste affinity**. Qloo's graph knows that
 someone who loves *Khruangbin* and *Spirited Away* is statistically drawn to a
@@ -42,9 +45,12 @@ repo is driven by a live Qloo Insights call.
 
 ## Judges — try the live demo (2 minutes)
 
-The live product runs on **TestFlight** (iOS):
+The live product runs on **TestFlight** (iOS) and as an Android APK:
 
-**1. Install:** <https://testflight.apple.com/join/uceuSRkh>
+**1. Install:**
+
+- **iOS (TestFlight):** <https://testflight.apple.com/join/uceuSRkh>
+- **Android (sideload the APK):** <https://github.com/suhailps93/ayma-taste-qloo/releases/latest/download/ayma-android.apk> — enable "install unknown apps", install, then log in with the same `test1@gmail.com` / `Test123` below.
 
 **2. Log in** with the throwaway demo account:
 
@@ -96,7 +102,7 @@ Run the test suite the same way:
 ```bash
 cd backend
 python3 -m pip install -r requirements-test.txt
-python3 -m pytest -q          # 12 passed, no key / network needed
+python3 -m pytest -q          # 9 passed, no key / network needed
 ```
 
 ---
@@ -204,7 +210,7 @@ backend/
   tests/                Self-contained tests (fixture + FakeDb, no network).
 docs/
   QLOO_TASTE.md         Full design: domains, signals, scoring, live-vs-fixture,
-                        privacy, kill switch, API.
+                        privacy, API.
 EXTRACTION_INVENTORY.md Every file, its origin, and every stubbed dependency.
 LICENSE / NOTICE        Apache-2.0.
 ```
@@ -226,9 +232,6 @@ and every stubbed dependency.
   caller's own private data. The demographics call sends **only taste entity ids**,
   never user identity (name, uid, birthdate, gender, location).
 - **18+.** The signed-in pair endpoint is gated to adults.
-- **Kill switch.** A single runtime flag (`qloo_enabled`, default on) short-circuits
-  the taste match **before any outbound Qloo call**, so Qloo billing can be stopped
-  instantly with no redeploy. Details in `docs/QLOO_TASTE.md`.
 
 ## License
 
