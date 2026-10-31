@@ -12,7 +12,7 @@ gives them their **taste match** and **taste-based date ideas** — powered by
 an **audience read**, and date ideas (a place, a film, an artist, a game… that
 Qloo's taste graph ranks highly for *both* of them at once).
 
-![A user's Story — the living portrait Ayma builds from conversation](docs/images/story.png)
+<img src="docs/images/story.png" alt="A user's Story — the living portrait Ayma builds from conversation" width="300">
 
 *What Ayma captures per user — a living portrait built from conversation, feeding
 the taste profile (shown: the `test1` demo account).*
@@ -76,11 +76,11 @@ search icon) to open the **match report**.
 - **Sofia Marino** → a **strong** taste match.
 - **Priya Nair** → a **poor** taste match.
 
-![Explore feed — tap a profile card: Sofia Marino (strong) or Priya Nair (poor)](docs/images/explore.png)
+<img src="docs/images/explore.png" alt="Explore feed — tap a profile card: Sofia Marino (strong) or Priya Nair (poor)" width="300">
 
 *In Explore, tap a profile card — Sofia Marino (strong, 99%) or Priya Nair (poor, 25%).*
 
-![On the profile, tap the match icon on the right-side rail to open the match report](docs/images/profile-match-icon.png)
+<img src="docs/images/profile-match-icon.png" alt="On the profile, tap the match icon on the right-side rail to open the match report" width="300">
 
 *On the profile, tap the **match icon** on the right-side rail — the bottom glyph,
 directly below the search icon. That opens the match report.*
@@ -88,11 +88,11 @@ directly below the search icon. That opens the match report.*
 The report opens on the score. Sofia's lands at a **99%** fit; Priya's is an honest
 **25%**, capped by a dealbreaker — Ayma tells you *why* it's low:
 
-![Sofia Marino match report — 99% strong match](docs/images/match-sofia.png)
+<img src="docs/images/match-sofia.png" alt="Sofia Marino match report — 99% strong match" width="300">
 
 *Sofia Marino — a 99% match, "high confidence."*
 
-![Priya Nair match report — 25% with a childfree-vs-children dealbreaker](docs/images/match-priya.png)
+<img src="docs/images/match-priya.png" alt="Priya Nair match report — 25% with a childfree-vs-children dealbreaker" width="300">
 
 *Priya Nair — 25%; the honest contrast, with the dealbreaker spelled out.*
 
@@ -101,7 +101,7 @@ the **"Taste match · powered by Qloo"** card. It shows the overall score, the
 per-domain bars, the shared tastes, the "why you match" taste descriptors, and the
 Qloo-ranked date ideas — all from the live Qloo Insights API.
 
-![Taste match · powered by Qloo — overall score, per-domain bars, and shared tastes](docs/images/taste-card.png)
+<img src="docs/images/taste-card.png" alt="Taste match · powered by Qloo — overall score, per-domain bars, and shared tastes" width="300">
 
 *The "Taste match · powered by Qloo" card: the 71/100 score, per-domain bars across
 all ten domains, the shared tastes, and the taste descriptors — every number from a
@@ -109,7 +109,7 @@ live Qloo Insights call.*
 
 Scroll past the score card for the **Qloo-ranked date ideas**:
 
-![Qloo-ranked date ideas — a place, a film, and an artist ranked for both](docs/images/date-ideas.png)
+<img src="docs/images/date-ideas.png" alt="Qloo-ranked date ideas — a place, a film, and an artist ranked for both" width="300">
 
 *Qloo-ranked date ideas — a place, a film, and an artist the taste graph ranks highly
 for **both** of them at once, plus one pick per other shared domain (TV, games,
@@ -120,7 +120,7 @@ anywhere and take any action just by talking. To start voice, tap the
 **microphone** button, or **press and hold the Ayma orb** in the bottom bar, then
 speak — e.g. *"open Sofia's profile"* or *"show our match report."*
 
-![Two ways to start voice — tap the mic or hold the Ayma orb](docs/images/voice-controls.png)
+<img src="docs/images/voice-controls.png" alt="Two ways to start voice — tap the mic or hold the Ayma orb" width="300">
 
 *Two ways to start voice: tap the mic in the composer, or press and hold the Ayma
 orb in the bottom bar.*
